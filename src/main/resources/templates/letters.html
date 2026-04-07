@@ -1,770 +1,237 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Алфавит — учебная страница</title>
+    <meta name="description" content="MariEst — mäemari/niidumari tähestik algajatele." />
+    <title>MariEst — Tähed</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
         :root {
-            --bg: #11181d;
+            --bg: #0f171d;
             --panel: #182229;
-            --panel-2: #1e2a33;
-            --panel-3: #22313b;
             --text: #f5f7fb;
             --muted: #9fb0bd;
             --green: #7ad400;
-            --green-dark: #5fb500;
             --blue: #6eb7ff;
             --yellow: #ffd84d;
-            --red: #ff6f6f;
-            --shadow: 0 16px 40px rgba(0,0,0,.35);
-            --radius: 22px;
-            --radius-sm: 16px;
             --border: 1px solid rgba(255,255,255,.08);
+            --shadow: 0 16px 40px rgba(0,0,0,.35);
         }
-
         * { box-sizing: border-box; }
         html, body {
             margin: 0;
             min-height: 100%;
-            background: radial-gradient(circle at top, #16222a 0%, var(--bg) 55%);
+            background: radial-gradient(circle at top, #16222a 0%, var(--bg) 60%);
             color: var(--text);
-            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: Inter, system-ui, sans-serif;
         }
-
-        body { overflow-x: hidden; }
-
-        .app {
-            display: grid;
-            grid-template-columns: 240px minmax(0, 1fr) 360px;
-            gap: 24px;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .sidebar,
-        .main,
-        .rightbar {
-            background: rgba(16, 23, 28, .75);
-            backdrop-filter: blur(10px);
-            border: var(--border);
-            box-shadow: var(--shadow);
-            border-radius: 28px;
-        }
-
-        .sidebar {
-            padding: 22px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 30px;
-            font-weight: 900;
-            color: #7ad400;
-        }
-
-        .brand .mark {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: linear-gradient(180deg, #9cff28, #71d400);
-            box-shadow: 0 10px 18px rgba(122,212,0,.22);
-            display: grid;
-            place-items: center;
-            color: #fff;
-            font-size: 19px;
-        }
-
-        .menu {
-            display: grid;
-            gap: 10px;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 14px;
-            border-radius: 16px;
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 700;
-            border: 1px solid transparent;
-            transition: .2s ease;
-        }
-
-        .menu-item:hover {
-            background: rgba(255,255,255,.04);
-            border-color: rgba(255,255,255,.08);
-            transform: translateY(-1px);
-        }
-
-        .menu-item.active {
-            background: rgba(122, 212, 0, .12);
-            border-color: rgba(122, 212, 0, .35);
-            color: #d8ff95;
-        }
-
-        .menu-icon {
-            width: 26px;
-            text-align: center;
-            font-size: 20px;
-        }
-
-        .main {
-            position: relative;
-            padding: 18px 18px 26px;
-            overflow: hidden;
-            background: none;
-        }
-
-        .main::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at top, rgba(122,212,0,.12), transparent 48%);
-            opacity: .95;
-            z-index: 0;
-        }
-
-        .main::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: rgba(17, 24, 29, 0.42);
-            z-index: 1;
-        }
-
-        .main > * {
-            position: relative;
-            z-index: 2;
-        }
-
-        .topbar {
+        .wrap { width: min(1080px, 100%); margin: 0 auto; padding: 20px; }
+        .top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 18px;
-            flex-wrap: wrap;
-        }
-
-        .progress-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            border-radius: 999px;
-            background: rgba(255,255,255,.05);
-            border: var(--border);
-            font-weight: 700;
-            color: var(--muted);
-        }
-
-        .stats {
-            display: flex;
             gap: 14px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
-            align-items: center;
         }
-
-        .stat {
+        .brand {
+            text-decoration: none;
+            color: var(--green);
+            font-weight: 900;
+            font-size: 30px;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            font-weight: 800;
-            color: var(--text);
-            background: rgba(255,255,255,.03);
-            border: var(--border);
-            border-radius: 999px;
-            padding: 9px 13px;
+            gap: 10px;
         }
-
-        .stat .emoji { font-size: 18px; }
-
-        .hero {
-            display: grid;
-            grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
-            gap: 18px;
-            margin-bottom: 20px;
-            align-items: start;
-        }
-
-        .course-card {
-            background: linear-gradient(135deg, #7ad400 0%, #67c800 100%);
-            color: #fff;
-            border-radius: 26px;
-            padding: 22px 22px 24px;
-            min-height: 160px;
-            box-shadow: 0 16px 30px rgba(122, 212, 0, .15);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .course-card h1 {
-            margin: 8px 0 0;
-            font-size: clamp(24px, 3vw, 38px);
-            line-height: 1.05;
-            max-width: 12ch;
-        }
-
-        .course-card .small {
-            font-size: 14px;
-            opacity: .95;
-            font-weight: 800;
-            letter-spacing: .03em;
-        }
-
+        .brand img { width: 34px; height: 34px; object-fit: contain; }
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            width: fit-content;
-            padding: 12px 18px;
-            border-radius: 16px;
-            border: none;
-            cursor: pointer;
-            font-weight: 900;
-            letter-spacing: .02em;
-            transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
             text-decoration: none;
-            user-select: none;
-            outline: none;
-        }
-
-        .btn:hover { transform: translateY(-1px); }
-
-        .btn-primary {
-            background: #ffe66b;
-            color: #222;
-            box-shadow: 0 10px 18px rgba(0,0,0,.16);
-        }
-
-        .btn-secondary {
-            background: rgba(255,255,255,.08);
+            border-radius: 14px;
+            padding: 10px 14px;
+            font-weight: 800;
+            border: var(--border);
             color: var(--text);
-            border: 1px solid rgba(255,255,255,.12);
+            background: rgba(255,255,255,.05);
         }
-
-        .alphabet-card {
+        .btn-primary {
+            border: none;
+            background: linear-gradient(135deg, #7ad400 0%, #5fb500 100%);
+            color: #fff;
+        }
+        .hero {
+            background: rgba(16, 23, 28, .82);
+            border: var(--border);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
             padding: 20px;
-            border-radius: 26px;
-            background:
-                    radial-gradient(circle at top, rgba(122,212,0,.10), transparent 26%),
-                    linear-gradient(180deg, rgba(255,255,255,.02), transparent 45%);
-            border: 1px solid rgba(255,255,255,.07);
-            min-height: 620px;
+            margin-bottom: 14px;
         }
-
+        .hero h1 { margin: 6px 0 8px; font-size: clamp(24px, 4vw, 40px); }
+        .hero p { margin: 0; color: var(--muted); line-height: 1.55; max-width: 70ch; }
+        .alphabet {
+            background: rgba(16, 23, 28, .82);
+            border: var(--border);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            padding: 18px;
+        }
         .alphabet-head {
             display: flex;
             justify-content: space-between;
-            gap: 12px;
             align-items: center;
-            margin-bottom: 18px;
-            flex-wrap: wrap;
-        }
-
-        .alphabet-head h2 {
-            margin: 0;
-            font-size: 20px;
-        }
-
-        .alphabet-head p {
-            margin: 6px 0 0;
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .alphabet-actions {
-            display: flex;
             gap: 10px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
         }
-
+        .alphabet-head h2 { margin: 0; font-size: 20px; }
+        .alphabet-head small { color: var(--muted); font-weight: 700; }
         .search {
             width: 100%;
-            margin-bottom: 16px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .search input {
-            width: 100%;
-            background: rgba(255,255,255,.05);
-            border: 1px solid rgba(255,255,255,.10);
-            color: var(--text);
-            border-radius: 16px;
-            padding: 14px 16px;
-            font: inherit;
-            outline: none;
-        }
-
-        .search input::placeholder { color: rgba(255,255,255,.35); }
-
-        .alphabet-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 12px;
-        }
-
-        .letter-btn {
-            position: relative;
-            min-height: 78px;
-            border-radius: 18px;
-            border: 1px solid rgba(255,255,255,.10);
-            background: #24323d;
-            color: var(--text);
-            display: grid;
-            place-items: center;
-            gap: 4px;
-            cursor: pointer;
-            box-shadow: inset 0 -4px 0 rgba(255,255,255,.04);
-            transition: transform .15s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
-            user-select: none;
-            overflow: hidden;
-        }
-
-        .letter-btn:hover {
-            transform: translateY(-2px);
-            background: #2b3a46;
-            border-color: rgba(255,255,255,.18);
-        }
-
-        .letter-btn .big {
-            font-size: 28px;
-            font-weight: 900;
-            line-height: 1;
-        }
-
-        .letter-btn .small {
-            font-size: 12px;
-            color: rgba(255,255,255,.55);
-            font-weight: 700;
-            letter-spacing: .02em;
-            text-transform: lowercase;
-        }
-
-        .letter-btn.learned {
-            background: linear-gradient(180deg, #9cff28, #71d400);
-            color: #fff;
-            border-color: rgba(255,255,255,.15);
-            box-shadow: 0 14px 26px rgba(122,212,0,.16);
-        }
-
-        .letter-btn.current {
-            background: linear-gradient(180deg, #6eb7ff, #3f96ff);
-            color: #fff;
-            border-color: rgba(255,255,255,.2);
-        }
-
-        .letter-btn.locked {
-            background: #1f2a33;
-            color: rgba(255,255,255,.35);
-            cursor: not-allowed;
-            opacity: .78;
-        }
-
-        .letter-btn .check {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: rgba(255,255,255,.18);
-            display: grid;
-            place-items: center;
-            font-size: 14px;
-            opacity: 0;
-            transform: scale(.85);
-            transition: .18s ease;
-        }
-
-        .letter-btn.learned .check,
-        .letter-btn.current .check {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .letter-btn .lock {
-            position: absolute;
-            bottom: 8px;
-            right: 10px;
-            font-size: 14px;
-            opacity: .8;
-        }
-
-        .legend {
-            margin-top: 18px;
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px;
-            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,.12);
             background: rgba(255,255,255,.04);
-            border: 1px solid rgba(255,255,255,.08);
-            color: var(--muted);
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .legend-swatch {
-            width: 14px;
-            height: 14px;
-            border-radius: 999px;
-            flex: 0 0 auto;
-        }
-
-        .swatch-learned { background: linear-gradient(180deg, #9cff28, #71d400); }
-        .swatch-current { background: linear-gradient(180deg, #6eb7ff, #3f96ff); }
-        .swatch-locked { background: #58646c; }
-
-        .rightbar {
-            padding: 18px;
-            display: grid;
-            gap: 16px;
-            align-content: start;
-        }
-
-        .card {
-            background: rgba(255,255,255,.03);
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 24px;
-            padding: 18px;
-        }
-
-        .card h3 {
-            margin: 0 0 10px;
-            font-size: 18px;
-        }
-
-        .card p {
-            margin: 0;
-            color: var(--muted);
-            line-height: 1.55;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: 999px;
-            background: rgba(122,212,0,.13);
-            border: 1px solid rgba(122,212,0,.25);
-            color: #dbff8f;
-            font-weight: 800;
-            font-size: 13px;
-            width: fit-content;
-        }
-
-        .daily {
-            display: grid;
-            gap: 12px;
-        }
-
-        .daily-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 0;
-        }
-
-        .daily-row strong { display: block; }
-        .daily-row span { color: var(--muted); font-size: 14px; }
-
-        .bar {
-            width: 100%;
-            height: 12px;
-            border-radius: 999px;
-            background: rgba(255,255,255,.08);
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .bar > i {
-            display: block;
-            height: 100%;
-            width: 56%;
-            border-radius: inherit;
-            background: linear-gradient(90deg, #ffd84d, #ffa94d);
-        }
-
-        .lesson-note {
-            display: grid;
-            gap: 10px;
-        }
-
-        .lesson-pill {
+            color: var(--text);
+            border-radius: 14px;
             padding: 12px 14px;
-            border-radius: 16px;
-            background: rgba(255,255,255,.04);
-            border: 1px solid rgba(255,255,255,.08);
-            color: var(--text);
-            font-weight: 700;
-            display: flex;
-            justify-content: space-between;
+            font: inherit;
+            margin-bottom: 12px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
             gap: 10px;
         }
-
-        .lesson-pill span { color: var(--muted); font-weight: 600; }
-
-        .footer-note {
+        .letter {
+            min-height: 82px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.16);
+            background: linear-gradient(180deg, #9cff28, #71d400);
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,.14), 0 12px 22px rgba(122,212,0,.16);
+            display: grid;
+            place-items: center;
             text-align: center;
+            line-height: 1.2;
+            padding: 8px 4px;
+            cursor: pointer;
+            transition: transform .12s ease, border-color .12s ease, background .12s ease;
+        }
+        .letter:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,.24);
+            background: linear-gradient(180deg, #a8ff3a, #7ad400);
+        }
+        .letter strong { display: block; font-size: 30px; font-weight: 900; }
+        .letter span { color: rgba(20,33,9,.72); font-size: 13px; font-weight: 800; }
+        .legend {
             margin-top: 12px;
-            color: rgba(255,255,255,.35);
+            color: var(--muted);
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            font-size: 13px;
             font-weight: 700;
-            letter-spacing: .02em;
         }
-
-        @media (max-width: 1200px) {
-            .app { grid-template-columns: 220px minmax(0, 1fr); }
-            .rightbar { grid-column: 1 / -1; }
-        }
-
-        @media (max-width: 900px) {
-            .app { grid-template-columns: 1fr; }
-            .sidebar { order: 2; }
-            .main { order: 1; }
-            .rightbar { order: 3; }
-            .hero { grid-template-columns: 1fr; }
-            .alphabet-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-            .legend { grid-template-columns: 1fr; }
-        }
-
-        @media (max-width: 560px) {
-            .app { padding: 12px; gap: 12px; }
-            .sidebar,
-            .main,
-            .rightbar { border-radius: 22px; }
-            .sidebar { padding: 18px 12px; }
-            .brand { font-size: 26px; }
-            .menu-item { padding: 12px; }
-            .course-card h1 { max-width: none; }
-            .alphabet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        }
+        .dot { width: 11px; height: 11px; border-radius: 999px; display: inline-block; margin-right: 6px; vertical-align: -1px; }
+        .d1 { background: #687983; }
+        @media (max-width: 900px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+        @media (max-width: 600px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
     </style>
 </head>
 <body>
-<div class="app">
-    <aside class="sidebar">
-        <div class="brand">
+<div class="wrap">
+    <header class="top">
+        <a class="brand" th:href="@{/}">
             MariEst
-            <div class="mark">★</div>
+            <img src="/images/Squirrel.png" width="34" height="34" alt="" aria-hidden="true" />
+        </a>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="btn" th:href="@{/learn}">Õpperada</a>
+            <a class="btn btn-primary" th:href="@{/sections}">Peatükid</a>
         </div>
+    </header>
 
-        <nav class="menu">
-            <a class="menu-item active" href="#"><span class="menu-icon">🏠</span>Учиться</a>
-            <a class="menu-item" href="#alphabet"><span class="menu-icon">🔤</span>Алфавит</a>
-            <a class="menu-item" href="#"><span class="menu-icon">🎯</span>Практика</a>
-            <a class="menu-item" href="#"><span class="menu-icon">🏆</span>Таблица лидеров</a>
-            <a class="menu-item" href="#"><span class="menu-icon">📦</span>Задания</a>
-            <a class="menu-item" href="#"><span class="menu-icon">🛒</span>Магазин</a>
-            <a class="menu-item" href="#"><span class="menu-icon">👤</span>Профиль</a>
-            <a class="menu-item" href="#"><span class="menu-icon">⋯</span>Ещё</a>
-        </nav>
-    </aside>
+    <section class="hero">
+        <div style="font-weight:800; color:#d8ff95;">Салам · Tere!</div>
+        <h1>Mari tähestik</h1>
+        <p>Lihtne mari tähestiku vaade: üks stiil, üks värv, ainult tähed ja häälikud.</p>
+    </section>
 
-    <main class="main">
-        <div class="topbar">
-            <div class="progress-pill">🇷🇺 Русский • Алфавит</div>
-            <div class="stats">
-                <div class="stat"><span class="emoji">🔥</span> 10</div>
-                <div class="stat"><span class="emoji">💎</span> 505</div>
-                <div class="stat"><span class="emoji">❤️</span> 5</div>
-            </div>
+    <section class="alphabet">
+        <div class="alphabet-head">
+            <h2>Tähekaardid (niidumari)</h2>
+            <small>36 tähte</small>
         </div>
-
-        <section class="hero">
-            <div class="course-card">
-                <div class="small">Тема 1 • Буквы</div>
-                <h1>Õpime niidumari keelt tähestikku nuppude abil</h1>
-                <a class="btn btn-secondary" href="#alphabet">📘 Открыть алфавит</a>
-            </div>
-
-            <div class="alphabet-card" id="alphabet">
-                <div class="alphabet-head">
-                    <div>
-                        <h2>Алфавит</h2>
-                        <p>Нажимай на буквы: изученные, текущие и заблокированные.</p>
-                    </div>
-                    <div class="alphabet-actions">
-                        <button class="btn btn-primary" id="markAll">Отметить изученные</button>
-                        <button class="btn btn-secondary" id="resetAll">Сбросить</button>
-                    </div>
-                </div>
-
-                <div class="search">
-                    <input id="search" type="text" placeholder="Поиск буквы или звука, например: ж, sh, ya" />
-                </div>
-
-                <div class="alphabet-grid" id="grid"></div>
-
-                <div class="legend">
-                    <div class="legend-item"><span class="legend-swatch swatch-learned"></span>Изученная буква</div>
-                    <div class="legend-item"><span class="legend-swatch swatch-current"></span>Текущая буква</div>
-                    <div class="legend-item"><span class="legend-swatch swatch-locked"></span>Заблокированная</div>
-                </div>
-            </div>
-        </section>
-
-        <div class="footer-note">Сделано в стиле Duolingo, но с вашим алфавитом.</div>
-    </main>
-
-    <aside class="rightbar">
-        <section class="card">
-            <div class="tag">SUPER</div>
-            <h3>Попробуйте Super бесплатно</h3>
-            <p>Без рекламы, персонализированные тренировки и дополнительные задания для закрепления букв.</p>
-            <div style="height:14px"></div>
-            <a class="btn btn-primary" href="#" style="width:100%;">Попробовать 1 неделю бесплатно</a>
-        </section>
-
-        <section class="card">
-            <div class="card-header">
-                <h3 style="margin:0;">Бронзовая лига</h3>
-                <a href="#" style="color:#6eb7ff; text-decoration:none; font-weight:800;">Просмотреть</a>
-            </div>
-            <p>Пройдите урок, чтобы подняться в таблице и открыть новые карточки с буквами.</p>
-        </section>
-
-        <section class="card daily">
-            <div class="card-header">
-                <h3 style="margin:0;">Ежедневные задания</h3>
-                <a href="#" style="color:#6eb7ff; text-decoration:none; font-weight:800;">Все задания</a>
-            </div>
-            <div class="daily-row">
-                <div style="font-size:28px;">⚡</div>
-                <div style="flex:1;">
-                    <strong>Заработайте 10 XP</strong>
-                    <div class="bar"><i></i></div>
-                    <span>6 / 10</span>
-                </div>
-            </div>
-        </section>
-
-        <section class="card lesson-note">
-            <div class="card-header" style="margin-bottom:0;">
-                <h3 style="margin:0;">Следующий урок</h3>
-            </div>
-            <div class="lesson-pill"><span>1</span> Буквы А–Д</div>
-            <div class="lesson-pill"><span>2</span> Буквы Е–К</div>
-            <div class="lesson-pill"><span>3</span> Буквы Л–Я</div>
-        </section>
-    </aside>
+        <input id="search" class="search" type="text" placeholder="Otsi tähte või häälikut, nt: Ӱ, ja, ng" />
+        <div id="grid" class="grid" aria-label="Mari tähestik"></div>
+        <div class="legend">
+            <div><span class="dot d1"></span>ühtne stiil kõigile tähtedele</div>
+        </div>
+    </section>
 </div>
 
 <script>
     const letters = [
-        { letter: 'А', sound: 'a', state: 'learned' },
-        { letter: 'Б', sound: 'b', state: 'learned' },
-        { letter: 'В', sound: 'v', state: 'current' },
-        { letter: 'Г', sound: 'g', state: 'locked' },
-        { letter: 'Д', sound: 'd', state: 'learned' },
-        { letter: 'Е', sound: 'je', state: 'learned' },
-        { letter: 'Ё', sound: 'jo', state: 'locked' },
-        { letter: 'Ж', sound: 'ž', state: 'locked' },
-        { letter: 'З', sound: 'z', state: 'locked' },
-        { letter: 'И', sound: 'i', state: 'learned' },
-        { letter: 'Й', sound: 'j', state: 'locked' },
-        { letter: 'К', sound: 'k', state: 'current' },
-        { letter: 'Л', sound: 'l', state: 'locked' },
-        { letter: 'М', sound: 'm', state: 'locked' },
-        { letter: 'Н', sound: 'n', state: 'locked' },
-        { letter: 'Ҥ', sound: 'ng', state: 'locked' },
-        { letter: 'О', sound: 'o', state: 'locked' },
-        { letter: 'Ö', sound: 'ö', state: 'locked' },
-        { letter: 'П', sound: 'p', state: 'locked' },
-        { letter: 'Р', sound: 'r', state: 'locked' },
-        { letter: 'С', sound: 's', state: 'locked' },
-        { letter: 'Т', sound: 't', state: 'locked' },
-        { letter: 'У', sound: 'u', state: 'locked' },
-        { letter: 'Ӱ', sound: 'ü', state: 'locked' },
-        { letter: 'Ф', sound: 'f', state: 'locked' },
-        { letter: 'Х', sound: 'h', state: 'locked' },
-        { letter: 'Ц', sound: 'ts', state: 'locked' },
-        { letter: 'Ч', sound: 'tš', state: 'locked' },
-        { letter: 'Ш', sound: 'š', state: 'locked' },
-        { letter: 'Щ', sound: 'štš', state: 'locked' },
-        { letter: 'Ы', sound: 'õ', state: 'locked' },
-        { letter: 'Э', sound: 'e', state: 'locked' },
-        { letter: 'Ю', sound: 'ju', state: 'locked' },
-        { letter: 'Я', sound: 'ja', state: 'locked' },
+        { letter: "А а", sound: "a" },
+        { letter: "Б б", sound: "b" },
+        { letter: "В в", sound: "v" },
+        { letter: "Г г", sound: "g" },
+        { letter: "Д д", sound: "d" },
+        { letter: "Е е", sound: "je" },
+        { letter: "Ё ё", sound: "jo" },
+        { letter: "Ж ж", sound: "ž" },
+        { letter: "З з", sound: "z" },
+        { letter: "И и", sound: "i" },
+        { letter: "Й й", sound: "j" },
+        { letter: "К к", sound: "k" },
+        { letter: "Л л", sound: "l" },
+        { letter: "М м", sound: "m" },
+        { letter: "Н н", sound: "n" },
+        { letter: "Ҥ ҥ", sound: "ng" },
+        { letter: "О о", sound: "o" },
+        { letter: "Ӧ ӧ", sound: "ö" },
+        { letter: "П п", sound: "p" },
+        { letter: "Р р", sound: "r" },
+        { letter: "С с", sound: "s" },
+        { letter: "Т т", sound: "t" },
+        { letter: "У у", sound: "u" },
+        { letter: "Ӱ ӱ", sound: "ü" },
+        { letter: "Ф ф", sound: "f" },
+        { letter: "Х х", sound: "h" },
+        { letter: "Ц ц", sound: "ts" },
+        { letter: "Ч ч", sound: "tš" },
+        { letter: "Ш ш", sound: "š" },
+        { letter: "Щ щ", sound: "štš" },
+        { letter: "Ъ ъ", sound: "kõva märk" },
+        { letter: "Ы ы", sound: "õ" },
+        { letter: "Ь ь", sound: "pehme märk" },
+        { letter: "Э э", sound: "e" },
+        { letter: "Ю ю", sound: "ju" },
+        { letter: "Я я", sound: "ja" }
     ];
 
-    const grid = document.getElementById('grid');
-    const search = document.getElementById('search');
-    const markAll = document.getElementById('markAll');
-    const resetAll = document.getElementById('resetAll');
+    const grid = document.getElementById("grid");
+    const search = document.getElementById("search");
 
-    const initial = letters.map(item => ({ ...item }));
-
-    function render(filter = '') {
-        grid.innerHTML = '';
-        const q = filter.trim().toLowerCase();
-
+    function render(query = "") {
+        const q = query.trim().toLowerCase();
+        grid.innerHTML = "";
         letters
-            .filter(item => {
-                if (!q) return true;
-                return item.letter.toLowerCase().includes(q) || item.sound.includes(q);
-            })
-            .forEach((item, idx) => {
-                const btn = document.createElement('button');
-                btn.className = `letter-btn ${item.state}`;
-                btn.type = 'button';
-                btn.innerHTML = `
-            <span class="check">✓</span>
-            <span class="big">${item.letter}</span>
-            <span class="small">${item.sound}</span>
-            ${item.state === 'locked' ? '<span class="lock">🔒</span>' : ''}
-          `;
-
-                btn.addEventListener('click', () => {
-                    if (item.state === 'locked') return;
-                    item.state = item.state === 'learned' ? 'current' : 'learned';
-                    render(search.value);
-                });
-
-                grid.appendChild(btn);
+            .filter((item) => !q || item.letter.toLowerCase().includes(q) || item.sound.toLowerCase().includes(q))
+            .forEach((item) => {
+                const card = document.createElement("button");
+                card.type = "button";
+                card.className = "letter";
+                card.innerHTML = "<strong>" + item.letter + "</strong><span>" + item.sound + "</span>";
+                grid.appendChild(card);
             });
     }
 
-    search.addEventListener('input', () => render(search.value));
-
-    markAll.addEventListener('click', () => {
-        letters.forEach(item => {
-            if (item.state !== 'locked') item.state = 'learned';
-        });
-        render(search.value);
-    });
-
-    resetAll.addEventListener('click', () => {
-        letters.splice(0, letters.length, ...initial.map(item => ({ ...item })));
-        render(search.value);
-    });
-
+    search.addEventListener("input", () => render(search.value));
     render();
 </script>
 </body>
