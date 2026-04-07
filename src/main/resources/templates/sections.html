@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Peatükid</title>
+    <style>
+        :root {
+            --bg: #11181d;
+            --panel: rgba(16, 23, 28, .75);
+            --text: #f5f7fb;
+            --muted: #9fb0bd;
+            --green: #7ad400;
+            --green-dark: #5fb500;
+            --blue: #6eb7ff;
+            --yellow: #ffd84d;
+            --shadow: 0 16px 40px rgba(0,0,0,.35);
+            --border: 1px solid rgba(255,255,255,.08);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            background: radial-gradient(circle at top, #16222a 0%, var(--bg) 55%);
+            color: var(--text);
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body { overflow-x: hidden; }
+
+        .app {
+            display: grid;
+            grid-template-columns: 240px minmax(0, 1fr) 360px;
+            gap: 24px;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .sidebar, .main, .rightbar {
+            background: var(--panel);
+            backdrop-filter: blur(10px);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            border-radius: 28px;
+        }
+
+        .sidebar {
+            padding: 22px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 30px;
+            font-weight: 900;
+            color: var(--green);
+        }
+
+        .brand img { width: 32px; height: 32px; object-fit: contain; }
+
+        .menu { display: grid; gap: 10px; }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 16px;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 700;
+            border: 1px solid transparent;
+            transition: .2s ease;
+        }
+
+        .menu-item:hover {
+            background: rgba(255,255,255,.04);
+            border-color: rgba(255,255,255,.08);
+            transform: translateY(-1px);
+        }
+
+        .menu-item.active {
+            background: rgba(122, 212, 0, .12);
+            border-color: rgba(122, 212, 0, .35);
+            color: #d8ff95;
+        }
+
+        .menu-icon {
+            width: 26px;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .menu-icon img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+        }
+
+        .main {
+            position: relative;
+            padding: 18px 18px 26px;
+            overflow: hidden;
+            background: none;
+        }
+
+        .main::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url("/images/bg.png") center/cover no-repeat;
+            opacity: .35;
+            z-index: 0;
+        }
+
+        .main::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(17, 24, 29, 0.45);
+            z-index: 1;
+        }
+
+        .main > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 16px;
+            padding: 10px 0;
+        }
+
+        .progress-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.05);
+            border: var(--border);
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .stats {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .stat {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            color: var(--text);
+            background: rgba(255,255,255,.03);
+            border: var(--border);
+            border-radius: 999px;
+            padding: 9px 13px;
+        }
+
+        .stat .emoji { font-size: 18px; }
+
+        .sections-shell {
+            max-width: 820px;
+            margin: 0 auto;
+            display: grid;
+            gap: 14px;
+            padding-top: 8px;
+        }
+
+        .section-card {
+            position: relative;
+            min-height: 168px;
+            border-radius: 22px;
+            padding: 18px 20px;
+            border: 1px solid rgba(255,255,255,.08);
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,.22);
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .section-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,.08), transparent 32%, rgba(255,255,255,.02));
+            pointer-events: none;
+        }
+
+        .section-card > * { position: relative; z-index: 1; }
+
+        .section-card.completed {
+            background:
+                    linear-gradient(135deg, rgba(255,255,255,.02), rgba(255,255,255,.01)),
+                    repeating-linear-gradient(135deg, rgba(255,255,255,.06) 0 42px, rgba(255,255,255,.01) 42px 84px),
+                    #1a242c;
+        }
+
+        .section-card.active {
+            background: linear-gradient(135deg, #ff58be 0%, #ff6dc5 45%, #f45ab5 100%);
+        }
+
+        .section-card.locked {
+            background: #26323b;
+            opacity: .72;
+        }
+
+        .section-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .section-kicker {
+            font-weight: 900;
+            font-size: 14px;
+            letter-spacing: .03em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.82);
+        }
+
+        .section-title {
+            font-size: clamp(22px, 3vw, 30px);
+            font-weight: 900;
+            line-height: 1.05;
+            margin: 6px 0 0;
+            max-width: 15ch;
+        }
+
+        .section-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255,255,255,.92);
+            font-weight: 800;
+            flex-wrap: wrap;
+        }
+
+        .section-meta .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            background: #75d600;
+            box-shadow: 0 0 0 4px rgba(117,214,0,.14);
+        }
+
+        .section-progress {
+            width: min(260px, 100%);
+            height: 16px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.12);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 3px;
+            margin-top: 8px;
+        }
+
+        .section-progress > i {
+            display: block;
+            height: 100%;
+            width: 0%;
+            border-radius: inherit;
+            background: rgba(255,255,255,.52);
+        }
+
+        .section-card.active .section-progress > i {
+            width: 0%;
+            background: rgba(255,255,255,.42);
+        }
+
+        .section-card.completed .section-progress > i {
+            width: 100%;
+            background: #75d600;
+        }
+
+        .section-illustration {
+            width: 160px;
+            min-width: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .section-illustration img {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
+            filter: drop-shadow(0 12px 18px rgba(0,0,0,.2));
+        }
+
+        .section-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: fit-content;
+            padding: 12px 18px;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            font-weight: 900;
+            letter-spacing: .02em;
+            transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+            text-decoration: none;
+            user-select: none;
+            margin-top: auto;
+        }
+
+        .section-action:hover { transform: translateY(-1px); }
+
+        .section-action.primary {
+            background: #fff;
+            color: #ff5fbf;
+            box-shadow: 0 10px 18px rgba(0,0,0,.16);
+        }
+
+        .section-action.secondary {
+            background: rgba(255,255,255,.04);
+            color: #6eb7ff;
+            border: 1px solid rgba(110,183,255,.26);
+        }
+
+        .section-action.dark {
+            background: rgba(0,0,0,.18);
+            color: #d7efff;
+            border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .section-title-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .completed-badge,
+        .locked-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+            margin-top: 8px;
+        }
+
+        .completed-badge { color: #98ff2f; }
+        .locked-badge { color: rgba(255,255,255,.45); }
+
+        .section-card.locked .section-action {
+            background: rgba(255,255,255,.02);
+            color: #a9cbdc;
+            border: 1px solid rgba(255,255,255,.10);
+        }
+
+        .section-card.locked .section-illustration img {
+            filter: grayscale(100%) brightness(.65) drop-shadow(0 10px 18px rgba(0,0,0,.18));
+            opacity: .75;
+        }
+
+        .rightbar {
+            padding: 18px;
+            display: grid;
+            gap: 16px;
+            align-content: start;
+        }
+
+        .card {
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 24px;
+            padding: 18px;
+        }
+
+        .card h3 {
+            margin: 0 0 10px;
+            font-size: 18px;
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(122,212,0,.13);
+            border: 1px solid rgba(122,212,0,.25);
+            color: #dbff8f;
+            font-weight: 800;
+            font-size: 13px;
+            width: fit-content;
+        }
+
+        .daily { display: grid; gap: 12px; }
+
+        .daily-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+        }
+
+        .daily-row strong { display: block; }
+        .daily-row span { color: var(--muted); font-size: 14px; }
+
+        .bar {
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.08);
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .bar > i {
+            display: block;
+            height: 100%;
+            width: 40%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #ffd84d, #ffa94d);
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 10px;
+            color: rgba(255,255,255,.35);
+            font-weight: 700;
+            letter-spacing: .02em;
+        }
+
+        @media (max-width: 1200px) {
+            .app { grid-template-columns: 220px minmax(0, 1fr); }
+            .rightbar { grid-column: 1 / -1; }
+        }
+
+        @media (max-width: 900px) {
+            .app { grid-template-columns: 1fr; }
+            .sidebar { order: 2; }
+            .main { order: 1; }
+            .rightbar { order: 3; }
+            .section-card { flex-direction: column; }
+            .section-illustration { width: 100%; min-width: 0; justify-content: flex-end; }
+        }
+
+        @media (max-width: 560px) {
+            .app { padding: 12px; gap: 12px; }
+            .sidebar, .main, .rightbar { border-radius: 22px; }
+            .sidebar { padding: 18px 12px; }
+            .brand { font-size: 26px; }
+            .menu-item { padding: 12px; }
+            .section-card { min-height: 190px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <aside class="sidebar">
+        <div class="brand">MariEst <img src="/images/Squirrel.png" alt="squirrel"></div>
+        <nav class="menu">
+            <a class="menu-item active" href="/sections"><span class="menu-icon"><img src="/images/acorn.png" alt="acorn"></span>Õppima</a>
+            <a class="menu-item" href="#"><span class="menu-icon"><img src="/images/acorn.png" alt="acorn"></span>Tähed</a>
+            <a class="menu-item" href="#"><span class="menu-icon"><img src="/images/acorn.png" alt="acorn"></span>Harjutus</a>
+            <a class="menu-item" href="#"><span class="menu-icon"><img src="/images/acorn.png" alt="acorn"></span>Edetabel</a>
+            <a class="menu-item" href="#"><span class="menu-icon"><img src="/images/acorn.png" alt="acorn"></span>Ülesanded</a>
+            <a class="menu-item" href="#"><span class="menu-icon"><img src="/images/acorn.png" alt="acorn"></span>Pood</a>
+            <a class="menu-item" href="#"><span class="menu-icon"><img src="/images/acorn.png" alt="acorn"></span>Profiil</a>
+            <a class="menu-item" href="#"><span class="menu-icon"><img src="/images/acorn.png" alt="acorn"></span>Veel</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <div class="topbar">
+            <a class="back-link" href="#">← Tagasi</a>
+            <div class="stats">
+                <div class="stat"><span class="emoji">🇷🇺</span> 10</div>
+                <div class="stat"><span class="emoji">💎</span> 505</div>
+                <div class="stat"><span class="emoji">❤️</span> 5</div>
+            </div>
+        </div>
+
+        <section class="sections-shell">
+            <div class="section-card completed">
+                <div class="section-content">
+                    <div>
+                        <div class="section-kicker">Vaata üksikasju</div>
+                        <div class="section-title">Peatükk 1</div>
+                        <div class="completed-badge">✔ lõpetatud!</div>
+                    </div>
+                    <div class="section-progress"><i></i></div>
+                </div>
+                <div class="section-illustration">
+                    <img src="/images/section-complete.png" alt="section complete">
+                </div>
+                <a class="section-action secondary" th:href="@{/}">Ülevaade</a>
+            </div>
+
+            <div class="section-card active">
+                <div class="section-content">
+                    <div>
+                        <div class="section-kicker">Vaata üksikasju</div>
+                        <div class="section-title">Peatükk 2</div>
+                        <div class="section-progress"><i></i></div>
+                        <div class="section-meta" style="margin-top:10px;">
+                            <span class="dot"></span>
+                            <span>0%</span>
+                        </div>
+                    </div>
+                    <a class="section-action primary" th:href="@{/}">Jätka</a>
+                </div>
+                <div class="section-illustration">
+                    <img src="/images/section-active.png" alt="section active">
+                </div>
+            </div>
+
+            <div class="section-card locked">
+                <div class="section-content">
+                    <div>
+                        <div class="section-kicker">Vaata üksikasju</div>
+                        <div class="section-title">Peatükk 3</div>
+                        <div class="locked-badge">🔒 30 ühikut</div>
+                    </div>
+                    <a class="section-action dark" href="#">Ava 3. peatükk</a>
+                </div>
+                <div class="section-illustration">
+                    <img src="/images/section-locked.png" alt="section locked">
+                </div>
+            </div>
+        </section>
+
+        <div class="footer-note">Jõudu tööle!</div>
+    </main>
+
+    <aside class="rightbar">
+        <section class="card">
+            <div class="tag">SUPER</div>
+            <h3>Proovi Superit tasuta</h3>
+            <p>Ilma reklaamideta, isikupärastatud harjutused ja piiramatu hulk erilisi preemiaid.</p>
+            <div style="height:14px"></div>
+            <a class="btn btn-primary" href="#" style="width:100%; display:inline-flex; justify-content:center; align-items:center; text-decoration:none; background:#4f5cff; color:#fff; border-radius:16px; padding:12px 18px; font-weight:900;">Proovi 1 nädal tasuta</a>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h3 style="margin:0;">Pronksliiga</h3>
+                <a href="#" style="color:#6eb7ff; text-decoration:none; font-weight:800;">Vaata liigat</a>
+            </div>
+            <p>Lõpeta tund, et pääseda selle nädala edetabelisse ja võistelda teiste õppijatega.</p>
+        </section>
+
+        <section class="card daily">
+            <div class="card-header">
+                <h3 style="margin:0;">Päevaülesanded</h3>
+                <a href="#" style="color:#6eb7ff; text-decoration:none; font-weight:800;">Vaata kõiki</a>
+            </div>
+            <div class="daily-row">
+                <div style="font-size:28px;">⚡</div>
+                <div style="flex:1;">
+                    <strong>Teeni 10 XP</strong>
+                    <div class="bar"><i></i></div>
+                    <span>4 / 10</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h3>Järgmine tund</h3>
+            <p>Tee 5 ülesannet ja ava uus teema kaartide ning tõlketestiga.</p>
+        </section>
+    </aside>
+</div>
+</body>
+</html>
