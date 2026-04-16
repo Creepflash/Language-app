@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ee.MariEst.language_app.user.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -28,12 +29,16 @@ public class AuthController {
             @RequestParam(value = "registered", required = false) Boolean registered,
             @RequestParam(value = "error", required = false) String error,
             Model model,
+            HttpServletRequest request,
             Authentication authentication) {
         if (authentication != null
                 && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken)) {
             return "redirect:/";
         }
+
+        // Ensure session exists before rendering large HTML so CSRF token can be stored safely.
+        request.getSession(true);
 
         if (!model.containsAttribute("loginForm")) {
             model.addAttribute("loginForm", new LoginForm());

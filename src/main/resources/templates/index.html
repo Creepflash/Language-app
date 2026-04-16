@@ -214,46 +214,142 @@
 
         .stat .emoji { font-size: 18px; }
 
-        .hero {
+        .lesson-layout {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 1fr;
             gap: 18px;
             margin-bottom: 20px;
         }
 
-        .course-card {
-            background: linear-gradient(135deg, #7ad400 0%, #67c800 100%);
-            color: #fff;
-            border-radius: 26px;
-            padding: 22px 22px 24px;
-            min-height: 150px;
-            box-shadow: 0 16px 30px rgba(122, 212, 0, .15);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        .lesson-header {
+            background: linear-gradient(135deg, rgba(122,212,0,.2) 0%, rgba(110,183,255,.15) 100%);
+            border: 1px solid rgba(122,212,0,.35);
+            border-radius: 24px;
+            padding: 18px 20px;
         }
 
-        .course-card h1 {
-            margin: 8px 0 0;
-            font-size: clamp(24px, 3vw, 38px);
-            line-height: 1.05;
-            max-width: 16ch;
+        .lesson-header h1 {
+            margin: 0;
+            font-size: clamp(24px, 3vw, 34px);
+            line-height: 1.1;
         }
 
-        .course-card .course-lead {
-            margin: 14px 0 0;
-            font-size: 15px;
+        .lesson-header p {
+            margin: 10px 0 0;
+            color: #d4e4ee;
+            font-weight: 600;
             line-height: 1.5;
-            font-weight: 700;
-            opacity: .96;
-            max-width: 36ch;
         }
 
-        .course-card .small {
-            font-size: 14px;
-            opacity: .95;
+        .lesson-progress {
+            margin-top: 14px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .lesson-progress-text {
+            color: #dbff8f;
             font-weight: 800;
-            letter-spacing: .03em;
+            font-size: 14px;
+        }
+
+        .lesson-list-wrap {
+            background: rgba(13, 19, 24, .65);
+            border: var(--border);
+            border-radius: 24px;
+            padding: 14px;
+        }
+
+        .lesson-list {
+            display: grid;
+            gap: 12px;
+            max-height: min(62vh, 760px);
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .lesson-card {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 14px;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 18px;
+            background: rgba(255,255,255,.03);
+            padding: 14px 16px;
+            text-decoration: none;
+            color: inherit;
+            transition: transform .16s ease, border-color .16s ease, background .16s ease, box-shadow .16s ease;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,.06);
+            border-color: rgba(255,255,255,.18);
+            box-shadow: 0 10px 24px rgba(0,0,0,.25);
+        }
+
+        .lesson-card.active {
+            border-color: rgba(122,212,0,.5);
+            background: rgba(122,212,0,.12);
+            box-shadow: 0 10px 24px rgba(122,212,0,.18);
+        }
+
+        .lesson-card.locked {
+            opacity: .64;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .lesson-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 22px;
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.1);
+        }
+
+        .lesson-card h3 {
+            margin: 0;
+            font-size: 17px;
+            line-height: 1.2;
+        }
+
+        .lesson-card p {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .status {
+            border-radius: 999px;
+            padding: 7px 11px;
+            font-size: 12px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            white-space: nowrap;
+        }
+
+        .status.available {
+            color: #d8ff95;
+            background: rgba(122,212,0,.15);
+            border: 1px solid rgba(122,212,0,.34);
+        }
+
+        .status.completed {
+            color: #d2ecff;
+            background: rgba(110,183,255,.14);
+            border: 1px solid rgba(110,183,255,.35);
+        }
+
+        .status.locked {
+            color: #c7d1da;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.2);
         }
 
         .btn {
@@ -284,11 +380,13 @@
         @media (prefers-reduced-motion: reduce) {
             .menu-item,
             .btn,
+            .lesson-card,
             .node {
                 transition: none !important;
             }
             .menu-item:hover,
-            .btn:hover {
+            .btn:hover,
+            .lesson-card:hover {
                 transform: none;
             }
         }
@@ -303,111 +401,6 @@
             background: rgba(255,255,255,.08);
             color: var(--text);
             border: 1px solid rgba(255,255,255,.12);
-        }
-
-        .path {
-            position: relative;
-            min-height: 560px;
-            max-width: 300px;
-            width: 100%;
-            margin-left: auto;
-
-            border-radius: 26px;
-            background:
-                    radial-gradient(circle at 50% 12%, rgba(122,212,0,.08), transparent 26%),
-                    linear-gradient(180deg, rgba(255,255,255,.02), transparent 45%);
-            border: 1px solid rgba(255,255,255,.06);
-            overflow: hidden;
-            padding: 20px 12px 18px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .path-line {
-            position: absolute;
-            left: 50%;
-            top: 90px;
-            bottom: 26px;
-            width: 10px;
-            transform: translateX(-50%);
-            background: linear-gradient(180deg, rgba(122,212,0,.35), rgba(255,255,255,.03));
-            border-radius: 999px;
-            opacity: .7;
-        }
-
-        .path-list {
-            position: relative;
-            z-index: 1;
-            width: min(420px, 100%);
-            display: grid;
-            gap: 24px;
-            justify-items: center;
-            align-content: start;
-            padding-top: 42px;
-        }
-
-        .node {
-            position: relative;
-            width: 92px;
-            height: 92px;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            background: #2a3740;
-            border: 6px solid rgba(255,255,255,.12);
-            box-shadow: inset 0 0 0 2px rgba(0,0,0,.14);
-            color: #fff;
-            font-size: 34px;
-        }
-
-        .node.locked {
-            background: #26323b;
-            color: rgba(255,255,255,.35);
-        }
-
-        .node.active {
-            background: linear-gradient(180deg, #9cff28, #71d400);
-            border-color: rgba(255,255,255,.18);
-            box-shadow: 0 16px 28px rgba(122,212,0,.2);
-            color: #fff;
-            transform: scale(1.02);
-        }
-
-        .node-badge {
-            position: absolute;
-            top: -46px;
-            background: rgba(255,255,255,.08);
-            border: 1px solid rgba(255,255,255,.12);
-            color: #d5ff88;
-            padding: 8px 12px;
-            border-radius: 14px;
-            font-size: 13px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: .03em;
-            white-space: nowrap;
-        }
-
-        .node-title {
-            position: absolute;
-            bottom: -34px;
-            font-size: 13px;
-            color: var(--muted);
-            font-weight: 700;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        .node.small {
-            width: 76px;
-            height: 76px;
-            font-size: 26px;
-        }
-
-        .node.big {
-            width: 110px;
-            height: 110px;
-            font-size: 40px;
         }
 
         .rightbar {
@@ -548,12 +541,6 @@
             .sidebar { order: 2; }
             .main { order: 1; }
             .rightbar { order: 3; }
-            .hero {
-                grid-template-columns: 1fr;
-            }
-            .path {
-                min-height: 460px;
-            }
         }
 
         @media (max-width: 560px) {
@@ -564,9 +551,14 @@
             .sidebar { padding: 18px 12px; }
             .brand { font-size: 26px; }
             .menu-item { padding: 12px; }
-            .course-card h1 { max-width: none; }
-            .path-list { width: 100%; }
-            .node.big { width: 92px; height: 92px; font-size: 34px; }
+            .lesson-card {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .lesson-icon {
+                width: 40px;
+                height: 40px;
+            }
         }
     </style>
 </head>
@@ -609,32 +601,20 @@
             </div>
         </div>
 
-        <section class="hero" aria-labelledby="course-heading">
-            <div class="course-card">
-                <div>
-                    <div class="small" lang="mhr-Cyrl">Салам · Tere!</div>
-                    <h1 id="course-heading">Õpi marit läbi oma emakeele</h1>
-                    <p class="course-lead">Lihtsad teemad, hääldus ja sõnavara — selgitused eesti keeles, nii et saad kohe rääkima ja kuulama harjutada.</p>
+        <section class="lesson-layout" aria-labelledby="course-heading">
+            <div class="lesson-header">
+                <h1 id="course-heading">Learning Path</h1>
+                <p>Pick the next lesson and continue your Mari learning journey at your own pace.</p>
+                <div class="lesson-progress">
+                    <span id="lesson-progress-text" class="lesson-progress-text">Progress: 0/0 lessons</span>
+                    <div class="bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="10" aria-label="Lesson progress">
+                        <i id="lesson-progress-bar" style="width:0%"></i>
+                    </div>
                 </div>
-                <a class="btn btn-primary" th:href="@{/sections}">Alusta esimest tundi →</a>
             </div>
 
-            <div class="path">
-                <div class="path-line" aria-hidden="true"></div>
-                <div class="path-list" role="list" aria-label="Tunni teekond">
-                    <div class="node big active" role="listitem">
-                        ⭐
-                        <div class="node-badge">Alusta</div>
-                        <div class="node-title">Tund</div>
-                    </div>
-
-                    <div class="node locked" role="listitem" aria-label="Lukus: blokk"><span aria-hidden="true">🔒</span><div class="node-title">Blokk</div></div>
-                    <div class="node small" role="listitem">⭐<div class="node-title">Treening</div></div>
-                    <div class="node small" role="listitem">💪<div class="node-title">Kordamine</div></div>
-                    <div class="node small" role="listitem">⭐<div class="node-title">Preemia</div></div>
-                    <div class="node locked" role="listitem" aria-label="Lukus: järgmine osa"><span aria-hidden="true">🔒</span><div class="node-title">Järgmine</div></div>
-                    <div class="node small" role="listitem">🏅<div class="node-title">Lõpeta</div></div>
-                </div>
+            <div class="lesson-list-wrap">
+                <div class="lesson-list" id="lesson-list" role="list" aria-label="Lesson list"></div>
             </div>
         </section>
 
@@ -677,5 +657,86 @@
         </section>
     </aside>
 </div>
+<template id="lesson-card-template">
+    <article class="lesson-card" role="listitem">
+        <div class="lesson-icon" aria-hidden="true"></div>
+        <div>
+            <h3 class="lesson-title"></h3>
+            <p class="lesson-description"></p>
+        </div>
+        <span class="status"></span>
+    </article>
+</template>
+<script>
+    const lessons = [
+        { id: 1, title: "Lesson 1: Greetings", description: "Learn everyday greetings and polite expressions.", status: "completed", icon: "👋" },
+        { id: 2, title: "Lesson 2: Introducing Yourself", description: "Say your name and share basic personal details.", status: "completed", icon: "🗣️" },
+        { id: 3, title: "Lesson 3: This is My Friend", description: "Introduce someone and use simple relationship words.", status: "completed", icon: "🤝" },
+        { id: 4, title: "Lesson 4: Numbers 1-10", description: "Count from one to ten and use numbers in phrases.", status: "available", icon: "🔢" },
+        { id: 5, title: "Lesson 5: Colors", description: "Name common colors and describe basic objects.", status: "available", icon: "🎨" },
+        { id: 6, title: "Lesson 6: Family", description: "Talk about parents, siblings, and close relatives.", status: "available", icon: "👨‍👩‍👧" },
+        { id: 7, title: "Lesson 7: Food", description: "Use practical food vocabulary for daily conversations.", status: "locked", icon: "🍲" },
+        { id: 8, title: "Lesson 8: Questions (Who? What?)", description: "Build simple question sentences with core prompts.", status: "locked", icon: "❓" },
+        { id: 9, title: "Lesson 9: Simple Verbs", description: "Practice common verbs in short present tense phrases.", status: "locked", icon: "⚡" },
+        { id: 10, title: "Lesson 10: Review", description: "Review key vocabulary and grammar from previous lessons.", status: "locked", icon: "🏁" }
+    ];
+
+    const lessonList = document.getElementById("lesson-list");
+    const template = document.getElementById("lesson-card-template");
+    const progressText = document.getElementById("lesson-progress-text");
+    const progressBar = document.getElementById("lesson-progress-bar");
+
+    function createLessonCard(lesson) {
+        const fragment = template.content.cloneNode(true);
+        const card = fragment.querySelector(".lesson-card");
+        const title = fragment.querySelector(".lesson-title");
+        const description = fragment.querySelector(".lesson-description");
+        const status = fragment.querySelector(".status");
+        const icon = fragment.querySelector(".lesson-icon");
+
+        title.textContent = lesson.title;
+        description.textContent = lesson.description;
+        status.textContent = lesson.status;
+        status.classList.add(lesson.status);
+        icon.textContent = lesson.icon;
+
+        if (lesson.status === "locked") {
+            card.classList.add("locked");
+            card.setAttribute("aria-disabled", "true");
+        } else {
+            if (lesson.status === "available") {
+                card.classList.add("active");
+            }
+            const clickableCard = document.createElement("a");
+            clickableCard.className = card.className;
+            clickableCard.href = `/learn/${lesson.id}`;
+            clickableCard.setAttribute("role", "listitem");
+            clickableCard.innerHTML = card.innerHTML;
+            return clickableCard;
+        }
+
+        return card;
+    }
+
+    function renderLessons() {
+        lessonList.innerHTML = "";
+        lessons.forEach((lesson) => {
+            lessonList.appendChild(createLessonCard(lesson));
+        });
+    }
+
+    function renderProgress() {
+        const completedCount = lessons.filter((lesson) => lesson.status === "completed").length;
+        const total = lessons.length;
+        const progressPercent = Math.round((completedCount / total) * 100);
+        progressText.textContent = `Progress: ${completedCount}/${total} lessons`;
+        progressBar.style.width = `${progressPercent}%`;
+        progressBar.parentElement.setAttribute("aria-valuenow", String(completedCount));
+        progressBar.parentElement.setAttribute("aria-valuemax", String(total));
+    }
+
+    renderLessons();
+    renderProgress();
+</script>
 </body>
 </html>
