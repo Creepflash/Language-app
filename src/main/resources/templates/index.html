@@ -603,18 +603,18 @@
 
         <section class="lesson-layout" aria-labelledby="course-heading">
             <div class="lesson-header">
-                <h1 id="course-heading">Learning Path</h1>
-                <p>Pick the next lesson and continue your Mari learning journey at your own pace.</p>
+                <h1 id="course-heading">Õpperada</h1>
+                <p>Vali järgmine tund ja jätka mari keele õppimist endale sobivas tempos.</p>
                 <div class="lesson-progress">
-                    <span id="lesson-progress-text" class="lesson-progress-text">Progress: 0/0 lessons</span>
-                    <div class="bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="10" aria-label="Lesson progress">
+                    <span id="lesson-progress-text" class="lesson-progress-text">Edenemine: 0/0 tundi</span>
+                    <div class="bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="10" aria-label="Tundide edenemine">
                         <i id="lesson-progress-bar" style="width:0%"></i>
                     </div>
                 </div>
             </div>
 
             <div class="lesson-list-wrap">
-                <div class="lesson-list" id="lesson-list" role="list" aria-label="Lesson list"></div>
+                <div class="lesson-list" id="lesson-list" role="list" aria-label="Tundide loend"></div>
             </div>
         </section>
 
@@ -668,25 +668,35 @@
     </article>
 </template>
 <script>
-    const lessons = [
-        { id: 1, title: "Lesson 1: Greetings", description: "Learn everyday greetings and polite expressions.", status: "completed", icon: "👋" },
-        { id: 2, title: "Lesson 2: Introducing Yourself", description: "Say your name and share basic personal details.", status: "completed", icon: "🗣️" },
-        { id: 3, title: "Lesson 3: This is My Friend", description: "Introduce someone and use simple relationship words.", status: "completed", icon: "🤝" },
-        { id: 4, title: "Lesson 4: Numbers 1-10", description: "Count from one to ten and use numbers in phrases.", status: "available", icon: "🔢" },
-        { id: 5, title: "Lesson 5: Colors", description: "Name common colors and describe basic objects.", status: "available", icon: "🎨" },
-        { id: 6, title: "Lesson 6: Family", description: "Talk about parents, siblings, and close relatives.", status: "available", icon: "👨‍👩‍👧" },
-        { id: 7, title: "Lesson 7: Food", description: "Use practical food vocabulary for daily conversations.", status: "locked", icon: "🍲" },
-        { id: 8, title: "Lesson 8: Questions (Who? What?)", description: "Build simple question sentences with core prompts.", status: "locked", icon: "❓" },
-        { id: 9, title: "Lesson 9: Simple Verbs", description: "Practice common verbs in short present tense phrases.", status: "locked", icon: "⚡" },
-        { id: 10, title: "Lesson 10: Review", description: "Review key vocabulary and grammar from previous lessons.", status: "locked", icon: "🏁" }
-    ];
-
+    let lessons = [];
     const lessonList = document.getElementById("lesson-list");
     const template = document.getElementById("lesson-card-template");
     const progressText = document.getElementById("lesson-progress-text");
     const progressBar = document.getElementById("lesson-progress-bar");
+    const lessonIcons = ["👋", "🗣️", "🔢", "🎨", "🍲", "❓", "⚡", "🏁"];
+
+    function mapStatus(lesson) {
+        if (lesson.completed) {
+            return "completed";
+        }
+        if (lesson.locked) {
+            return "locked";
+        }
+        return "available";
+    }
+
+    function statusLabelEt(statusName) {
+        if (statusName === "completed") {
+            return "lõpetatud";
+        }
+        if (statusName === "locked") {
+            return "lukus";
+        }
+        return "saadaval";
+    }
 
     function createLessonCard(lesson) {
+        const statusName = mapStatus(lesson);
         const fragment = template.content.cloneNode(true);
         const card = fragment.querySelector(".lesson-card");
         const title = fragment.querySelector(".lesson-title");
@@ -695,16 +705,16 @@
         const icon = fragment.querySelector(".lesson-icon");
 
         title.textContent = lesson.title;
-        description.textContent = lesson.description;
-        status.textContent = lesson.status;
-        status.classList.add(lesson.status);
-        icon.textContent = lesson.icon;
+        description.textContent = lesson.description || "Kirjeldus puudub.";
+        status.textContent = statusLabelEt(statusName);
+        status.classList.add(statusName);
+        icon.textContent = lessonIcons[(lesson.orderIndex - 1) % lessonIcons.length];
 
-        if (lesson.status === "locked") {
+        if (statusName === "locked") {
             card.classList.add("locked");
             card.setAttribute("aria-disabled", "true");
         } else {
-            if (lesson.status === "available") {
+            if (statusName === "available") {
                 card.classList.add("active");
             }
             const clickableCard = document.createElement("a");
@@ -726,17 +736,29 @@
     }
 
     function renderProgress() {
-        const completedCount = lessons.filter((lesson) => lesson.status === "completed").length;
+        const completedCount = lessons.filter((lesson) => lesson.completed).length;
         const total = lessons.length;
-        const progressPercent = Math.round((completedCount / total) * 100);
-        progressText.textContent = `Progress: ${completedCount}/${total} lessons`;
+        const progressPercent = total === 0 ? 0 : Math.round((completedCount / total) * 100);
+        progressText.textContent = `Edenemine: ${completedCount}/${total} tundi`;
         progressBar.style.width = `${progressPercent}%`;
         progressBar.parentElement.setAttribute("aria-valuenow", String(completedCount));
         progressBar.parentElement.setAttribute("aria-valuemax", String(total));
     }
 
-    renderLessons();
-    renderProgress();
+    async function loadLessons() {
+        const response = await fetch("/api/lessons");
+        if (!response.ok) {
+            throw new Error("Tunde ei saanud laadida");
+        }
+        lessons = await response.json();
+        renderLessons();
+        renderProgress();
+    }
+
+    loadLessons().catch(() => {
+        lessonList.innerHTML = "<p>Tunde ei õnnestunud laadida.</p>";
+        progressText.textContent = "Edenemine: pole saadaval";
+    });
 </script>
 </body>
 </html>
